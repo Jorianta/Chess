@@ -1,0 +1,25 @@
+{
+  "name": "chess",
+  "version": "1.0.0",
+  "description": "A personal discord bot",
+  "keywords": [
+    "bot",
+    "discord",
+    "fortnite"
+  ],
+  "homepage": "https://github.com/Jorianta/Chess#readme",
+  "bugs": {
+    "url": "https://github.com/Jorianta/Chess/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jorianta/Chess.git"
+  },
+  "license": "MIT",
+  "author": "Braquen",
+  "type": "commonjs",
+  "main": "bot.ts",
+  "scripts": {
+		"start": "node bot.ts"
+	}
+}

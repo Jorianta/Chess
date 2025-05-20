@@ -1,0 +1,6 @@
+node_modules
+.env
+*.crt
+_cache
+_emoji-archive
+.vscode

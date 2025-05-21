@@ -1,7 +1,7 @@
 import { REST } from '@discordjs/rest';
 import { Routes as DiscordRestRoutes } from 'discord-api-types/v9';
 import {glob} from 'glob';
-import { Client } from 'discord.js';
+import { ApplicationCommandType, Client } from 'discord.js';
 import path from 'path';
 import CONFIG from "./config.js"
 import { log } from './logging.js';
@@ -12,10 +12,14 @@ export interface Command {
 
 }
 
-interface CommandConfig {
+export interface CommandConfig {
 	name: string
+	description: string
+	type: ApplicationCommandType
+	options: any
 }
 
+// Stolen from Lospec Discord bot//
 export function LoadCommands(client: Client)
 {
 	console.log("Loading Commands...")
@@ -27,12 +31,17 @@ export function LoadCommands(client: Client)
 	client.once('ready', async c => {
 
 		let commandsList: CommandConfig[] = [];
-		let commandFileList = glob.sync('./commands/*.js');
+		//Still cant figure out relative pathing with node.
+		let commandFileList = glob.sync('./dist/src/commands/*.js');
+
+		console.log(commandFileList)
 
 		for (let commandPath of commandFileList) {
 			let commandName = path.basename(commandPath, '.js');
 			let command: Command;
-			try { command = await import('./'+commandPath); }
+
+			
+			try { command = await import("./commands/"+commandName+".js"); }
 			catch (err) {
 				console.error('Failed to load command:', commandName);
 				console.error(err);
@@ -65,7 +74,7 @@ export function LoadCommands(client: Client)
 		console.log('/'+ interaction.commandName, 'triggered');
 
 		let command = interaction.commandName;
-		let subcommand = interaction.isChatInputCommand() ? interaction.options.getSubcommand() : null;
+		let subcommand = interaction.isChatInputCommand() ? interaction.options.getSubcommand(false) : null;
 		
 		let commandName = command;
 		if (subcommand) commandName += '.'+subcommand;

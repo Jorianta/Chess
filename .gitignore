@@ -1,6 +1,7 @@
 node_modules
-.env
+dist
 *.crt
 _cache
 _emoji-archive
 .vscode
+CONFIG.json

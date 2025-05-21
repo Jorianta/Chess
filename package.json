@@ -2,6 +2,7 @@
   "name": "chess",
   "version": "1.0.0",
   "description": "A personal discord bot",
+  "type": "module",
   "keywords": [
     "bot",
     "discord",
@@ -17,9 +18,25 @@
   },
   "license": "MIT",
   "author": "Braquen",
-  "type": "commonjs",
   "main": "bot.ts",
   "scripts": {
-		"start": "node bot.ts"
-	}
+    "dev": "",
+    "start": "npm run build && npm run start:bot",
+    "start:bot": "node --enable-source-maps dist/bot.js",
+    "build": "tsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "data-store": "^4.0.3",
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "@types/express-handlebars": "^6.0.2",
+    "@types/node": "^22.15.20",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.5.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
 }

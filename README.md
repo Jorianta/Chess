@@ -24,9 +24,7 @@ Make sure you have a discord set-up where you have admin permissions before foll
 4. Replace `DISCORD_TOKEN` in the following snippet and save it as `CONFIG.json` in the project working directory:   
 ```json
 {
-  "config": {
-    "token": "DISCORD_TOKEN"
-  }
+  "token": "DISCORD_TOKEN"
 }
 ```
 5. To invite your bot to your development server, go back to the `General Infomration` tab and note down the `Client ID`. Replace `CLIENT_ID` in the following URL with that number and visit it in your browser:   

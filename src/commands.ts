@@ -1,14 +1,16 @@
 import { REST } from '@discordjs/rest';
 import { Routes as DiscordRestRoutes } from 'discord-api-types/v9';
 import {glob} from 'glob';
-import { ApplicationCommandType, Client } from 'discord.js';
+import { ApplicationCommandType, BaseInteraction, Client, CommandInteraction, Interaction } from 'discord.js';
 import path from 'path';
 import CONFIG from "./config.js"
 import { log } from './logging.js';
 
+const COMMANDS: {[id: string]: Function} = {};
+
 export interface Command {
 	config: CommandConfig
-	execute: Function
+	execute: (interaction: CommandInteraction) => void
 
 }
 
@@ -22,13 +24,12 @@ export interface CommandConfig {
 // Stolen from Lospec Discord bot//
 export function LoadCommands(client: Client)
 {
-	console.log("Loading Commands...")
 
 	const rest = new REST({ version: '9' }).setToken(CONFIG.token);
 
-	let COMMANDS: {[id: string]: Function} = {};
-
 	client.once('ready', async c => {
+
+		console.log("Loading Commands...")
 
 		let commandsList: CommandConfig[] = [];
 		//Still cant figure out relative pathing with node.
@@ -69,7 +70,7 @@ export function LoadCommands(client: Client)
 		});
 	});
 
-	client.on('interactionCreate', async interaction => {
+	client.on('interactionCreate', async (interaction: BaseInteraction) => {
 		if (!interaction.isCommand()) return;
 		console.log('/'+ interaction.commandName, 'triggered');
 
@@ -83,7 +84,7 @@ export function LoadCommands(client: Client)
 
 		try { 
 			console.log('running command "'+commandName+'"');
-			await COMMANDS[commandName](interaction); 
+			await COMMANDS[commandName](interaction as CommandInteraction); 
 		}
 		catch (err) {
 			console.error('/'+commandName, 'encountered an error:', err);

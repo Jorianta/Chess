@@ -1,7 +1,7 @@
 
 import Store from "data-store"
 import { read, readFileSync } from "fs";
-import { ContainerComponent } from "discord.js";
+import { ContainerComponent, Guild, TextChannel } from "discord.js";
 import { log } from "./logging.js";
 
 console.log("Loading Config...")
@@ -16,6 +16,7 @@ class BotConfig {
     private _logEvents: boolean
     private _emojiTimeout: number
     private _token: string
+    private _quoteChannel: string
 
     constructor()
     {
@@ -39,6 +40,7 @@ class BotConfig {
             this._logEvents=config.logEvents||false
             this._emojiTimeout=config.emojiTimeout||10
             this._token = config.token
+            this._quoteChannel = config.quoteChannel||"Quotes"
         }
         catch(e)
         {
@@ -75,6 +77,23 @@ class BotConfig {
     public get token()
     {
         return this._token
+    }
+
+    public findQuoteChannel(guild: Guild): TextChannel | null
+    {
+        let channel = guild.channels.cache.find((channel: TextChannel) => channel.name === this._quoteChannel)
+        if(channel.isTextBased())
+        {
+            return (channel as TextChannel)
+        }
+
+        else return null
+    }
+
+    public set quoteChannel(channelName: string)
+    {
+        this._quoteChannel = channelName;
+        this.store.set('quoteChannel', channelName)
     }
 }
 

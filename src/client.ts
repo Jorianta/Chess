@@ -1,5 +1,6 @@
 import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import CONFIG from './config.js';
+import { channel } from 'diagnostics_channel';
 
 console.log("Starting Chess...")
 
@@ -10,7 +11,24 @@ const client = new Client({
 });
 client.once('ready', async c => {
 	console.log('Chess is logged in');
-	client.guilds.cache.forEach(guild => {console.log('Joined server:', guild.name);});
+	client.guilds.cache.forEach(guild => 
+		{
+			console.log('Joined server:', guild.name);
+			try {
+				let quoteChannel = guild.channels.cache.find(channel => channel.name === CONFIG.quoteChannel)
+				if(quoteChannel!= null)
+				{
+					console.log(`Identified quote channel for ${guild.name}`)
+					CONFIG.saveQuoteChannel(guild.id, quoteChannel.id)
+				}
+				else
+				{
+					console.warn(`!!! No quote channel found for guild ${guild.name}`)
+				}
+			} catch(e) {
+				console.warn(`Chess had an error trying to find a quotes channel for guild ${guild.name}: `+ e)
+			}
+		});
 });
 
 client.login(CONFIG.token);

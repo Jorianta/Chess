@@ -25,8 +25,13 @@ function init_db()
   });
 
   con.connect(function(err) {
+    if(err && err.code == "ECONNREFUSED")
+    {
+      console.warn(`No database found at the specified host, ${CONFIG.dbHost}. Did you mean to configure one?`)
+      return;
+    }
     if (err) throw err;
-    console.log("Connected!");
+    console.log(`Connected to ${CONFIG.dbHost}!`);
     con.query(`CREATE DATABASE IF NOT EXISTS chess_db`, function (err, result) {
       if (err) throw err;
       console.log("chess database created");

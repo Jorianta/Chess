@@ -1,4 +1,4 @@
-import { GuildChannel, MessageFlags, MessageReaction, User } from 'discord.js';
+import { GuildChannel, MessageFlags, MessageReaction, TextChannel, User } from 'discord.js';
 import CONFIG from '../config.js';
 import client from '../client.js';
 import { log } from 'console';
@@ -16,8 +16,8 @@ export const filter = async (reaction: MessageReaction, user: User) => {
 	if ((!reaction.message.author) || reaction.message.author.bot || reaction.message.author.id == user.id) return false;
     console.log("not self")
     // no quoting quotes
-    let quoteChannel = CONFIG.findQuoteChannel(reaction.message.guild)
-    if (!quoteChannel || reaction.message.channel === quoteChannel) return false;
+    let quoteChannel = CONFIG.getQuoteChannelId(reaction.message.guild.id)
+    if (reaction.message.channel.id === quoteChannel) return false;
     console.log("valid channel")
 
 	return true;
@@ -30,8 +30,12 @@ export const execute = async (reaction: MessageReaction, user: User) => {
         //put on our own camera. This will prevent us from requoting probably hopefully
         reaction.message.react('📸')
 
-        const quoteChannel = CONFIG.findQuoteChannel(reaction.message.guild);
-        if(quoteChannel == null) return; 
+        const quoteChannel = await CONFIG.findQuoteChannel(reaction.message.guild);
+        if(quoteChannel == null || !(quoteChannel instanceof TextChannel))
+        {
+            console.error(`Guild ${reaction.message.guild.name} has no text channel named ${CONFIG.quoteChannel} for quotes, or it no longer exists.`)
+            return; 
+        }
         
         const channel: string = (reaction.message.channel as GuildChannel).id
         const author: User = reaction.message.author 

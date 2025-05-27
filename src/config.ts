@@ -1,8 +1,9 @@
 
 import Store from "data-store"
 import { read, readFileSync } from "fs";
-import { ContainerComponent, Guild, TextChannel } from "discord.js";
+import { ContainerComponent, Guild, Channel } from "discord.js";
 import { log } from "./logging.js";
+import client from "./client.js";
 
 console.log("Loading Config...")
 
@@ -19,6 +20,7 @@ class BotConfig {
     private _quoteChannel: string
 
     private _dbhost: string
+    private _quoteChannels: {[key: string]: string} = {};
 
     constructor()
     {
@@ -42,7 +44,7 @@ class BotConfig {
             this._logEvents=config.logEvents||false
             this._emojiTimeout=config.emojiTimeout||10
             this._token = config.token
-            this._quoteChannel = config.quoteChannel||"quotes"
+            this._quoteChannel = config.quotesChannel||"quotes"
             this._dbhost = config.dbHost||"localhost"
         }
         catch(e)
@@ -87,21 +89,41 @@ class BotConfig {
         return this._token
     }
 
-    public findQuoteChannel(guild: Guild): TextChannel | null
+    public findQuoteChannel(guild: Guild): Promise<Channel> | null
     {
-        let channel = guild.channels.cache.find((channel: TextChannel) => channel.name === this._quoteChannel)
-        if(channel.isTextBased())
+        
+        if(this._quoteChannels[guild.id])
         {
-            return (channel as TextChannel)
+            return client.channels.fetch(this._quoteChannels[guild.id])
         }
 
         else return null
+    }
+
+    public getQuoteChannelId(guildId: string): string | null
+    {
+        if(this._quoteChannel[guildId])
+        {
+            return this._quoteChannels[guildId]
+        }
+
+        return null;
+    }
+
+    public saveQuoteChannel(guildId: string, channelId: string)
+    {
+        this._quoteChannels[guildId] = channelId;
     }
 
     public set quoteChannel(channelName: string)
     {
         this._quoteChannel = channelName;
         this.store.set('quoteChannel', channelName)
+    }
+
+    public get quoteChannel()
+    {
+        return this._quoteChannel
     }
 }
 

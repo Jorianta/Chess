@@ -25,12 +25,13 @@ export const config: CommandConfig = {
 };
 
 export const execute = async (interaction) => {
-	await interaction.deferReply();
 
     try{
         let sides = interaction.options.getInteger('sides')
         let rolls = interaction.options.getInteger('rolls')||1
         let secret = interaction.options.getBoolean('secret')||false
+
+	    await interaction.deferReply({ephemeral: secret});
 
         if(rolls<=0 || sides<=1)
         {
@@ -47,9 +48,9 @@ export const execute = async (interaction) => {
 
         for(let i=0; i<rolls; i++)
         {
-            let r = await Math.floor(Math.random()*sides)+1
+            let r = Math.floor(Math.random()*sides)+1
             sum+=r
-            await insertSorted(r, results)
+             insertSorted(r, results)
         }
 
         await interaction.editReply({embeds:[{

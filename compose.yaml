@@ -2,10 +2,20 @@ services:
   chess:
     build: .
     depends_on:
-      - bishop
+      bishop:
+       condition: service_healthy
+
+
   bishop:
     image: mariadb
     restart: always
     environment:
       MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+    
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
     

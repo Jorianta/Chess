@@ -16,6 +16,6 @@
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true
   },
-  "exclude": ["dist", "node_modules",".gitignore","Dockerfile"],
+  "exclude": ["dist", "node_modules",".gitignore","Dockerfile","compose.yaml"],
   "include": [ "./CONFIG.json", "./**/*.ts"]
 }

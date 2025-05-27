@@ -18,6 +18,8 @@ class BotConfig {
     private _token: string
     private _quoteChannel: string
 
+    private _dbhost: string
+
     constructor()
     {
         //I cant figure out why, but relative file names are based on the rootdir in tsconfig
@@ -40,7 +42,8 @@ class BotConfig {
             this._logEvents=config.logEvents||false
             this._emojiTimeout=config.emojiTimeout||10
             this._token = config.token
-            this._quoteChannel = config.quoteChannel||"Quotes"
+            this._quoteChannel = config.quoteChannel||"quotes"
+            this._dbhost = config.dbHost||"localhost"
         }
         catch(e)
         {
@@ -66,6 +69,11 @@ class BotConfig {
     public get emojiTimeout()
     {
         return this._emojiTimeout
+    }
+
+    public get dbHost()
+    {
+        return this._dbhost
     }
 
     public set token(token: string)

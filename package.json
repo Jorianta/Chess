@@ -28,11 +28,13 @@
   "dependencies": {
     "data-store": "^4.0.3",
     "discord.js": "^14.19.3",
-    "dotenv": "^16.5.0"
+    "dotenv": "^16.5.0",
+    "mysql": "^2.18.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.2",
     "@types/express-handlebars": "^6.0.2",
+    "@types/mysql": "^2.15.27",
     "@types/node": "^22.15.20",
     "ts-node": "^10.9.2",
     "tsup": "^8.5.0",

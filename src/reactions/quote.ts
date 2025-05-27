@@ -2,18 +2,23 @@ import { GuildChannel, MessageFlags, MessageReaction, User } from 'discord.js';
 import CONFIG from '../config.js';
 import client from '../client.js';
 import { log } from 'console';
+import { submitQuote } from '../data.js';
 
 // this should only work when a user reacts with a camera emoji to a message by someone else outside of quote channels
 export const filter = async (reaction: MessageReaction, user: User) => {
 	// reaction is not a camera
 	if (reaction.emoji.name !== '📸') return false;
+    console.log("camera")
     // avoid requoting
-    if(reaction.message.reactions.cache.find(reaction => (reaction.emoji.name === '📸'))) return false;
+    if(reaction.message.reactions.cache.find(reaction => (reaction.emoji.name === '📸' && reaction.me))) return false;
+    console.log("fresh quote")
 	// no self clipping or bot clipping
 	if ((!reaction.message.author) || reaction.message.author.bot || reaction.message.author.id == user.id) return false;
+    console.log("not self")
     // no quoting quotes
     let quoteChannel = CONFIG.findQuoteChannel(reaction.message.guild)
     if (!quoteChannel || reaction.message.channel === quoteChannel) return false;
+    console.log("valid channel")
 
 	return true;
 }
@@ -22,7 +27,7 @@ export const execute = async (reaction: MessageReaction, user: User) => {
     try{
         console.log('quoting message ', reaction.message.id);
 
-        //put on our own camera. This will prevent us from requoting
+        //put on our own camera. This will prevent us from requoting probably hopefully
         reaction.message.react('📸')
 
         const quoteChannel = CONFIG.findQuoteChannel(reaction.message.guild);
@@ -39,6 +44,8 @@ export const execute = async (reaction: MessageReaction, user: User) => {
         description: text 
         +"\n\nClipped by <@"+user+">"+
         "\nOriginal Message: "+ link}]})
+
+        submitQuote(reaction.message.guildId,author.id,user.id)
         
     } catch (e) {
         log(e)

@@ -1,0 +1,11 @@
+services:
+  chess:
+    build: .
+    depends_on:
+      - bishop
+  bishop:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+    

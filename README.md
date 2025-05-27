@@ -34,7 +34,15 @@ Make sure you have a discord set-up where you have admin permissions before foll
 7. ### Running the bot
 To run the bot, access the project working directory in a terminal and run `npm start`. 
 
-8. ### Contribution
+8. ### Database
+The bot by default looks for an SQL server at localhost:3306. If you have Mysql, Mariadb, etc. listening there it will automatically create the required database and tables (though you may have to edit data.ts if you have a specific user and password you'd like to use.). If you have some other host, set the following key to it's name/ip in CONFIG.json:
+```json
+{
+  "dbHost": "SOME_PLACE_THAT_IS_NOT_LOCALHOST"
+}
+```
+
+9. ### Contribution
 
 ## Commands
 

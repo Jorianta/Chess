@@ -31,7 +31,6 @@ export function LoadResponses(client: Client)
     });
 
     client.on('messageCreate', async message => {
-        console.log('message received:', message.content);
         
         if (message.author.bot) return;
         if (!message.guild) return;

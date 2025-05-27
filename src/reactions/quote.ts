@@ -48,7 +48,7 @@ export const execute = async (reaction: MessageReaction, user: User) => {
         submitQuote(reaction.message.guildId,author.id,user.id)
         
     } catch (e) {
-        log(e)
+        console.error("quoting encountered an error: " + e)
     }
 }
 

@@ -1,5 +1,6 @@
 import { ApplicationCommandType, ApplicationCommandOptionType} from 'discord.js';
 import {CommandConfig} from '../commands.js'
+import { log } from '../logging.js';
 
 export const config: CommandConfig = {
 	name: 'd', 
@@ -26,39 +27,42 @@ export const config: CommandConfig = {
 export const execute = async (interaction) => {
 	await interaction.deferReply();
 
-    let sides = interaction.options.getInteger('sides')
-    let rolls = interaction.options.getInteger('rolls')||1
-    let secret = interaction.options.getBoolean('secret')||false
+    try{
+        let sides = interaction.options.getInteger('sides')
+        let rolls = interaction.options.getInteger('rolls')||1
+        let secret = interaction.options.getBoolean('secret')||false
 
-    if(rolls<=0 || sides<=1)
-    {
-        interaction.editReply({ content: "Dice need to have at least 2 sides, and you need to roll at least 1 die!", ephemeral: true })
-        return;
+        if(rolls<=0 || sides<=1)
+        {
+            interaction.editReply({ content: "Dice need to have at least 2 sides, and you need to roll at least 1 die!", ephemeral: true })
+            return;
+        }
+        if(rolls>=100)
+        {
+            await interaction.editReply({ content: "You're asking a lot. Please roll less than 100 dice!", ephemeral: true })
+            return;
+        }
+        let results: number[] = []
+        let sum: number = 0
+
+        for(let i=0; i<rolls; i++)
+        {
+            let r = await Math.floor(Math.random()*sides)+1
+            sum+=r
+            await insertSorted(r, results)
+        }
+
+        await interaction.editReply({embeds:[{
+            title:"Results",
+            description: "**Numbers Rolled: **"+ results +
+            "\n**Highest: **"+ results[0] + 
+            "\n**Lowest: **"+ results[results.length-1] +
+            "\n**Sum: **: " + sum}]
+            , ephemeral: secret})
     }
-
-    if(rolls>=100)
-    {
-        await interaction.editReply({ content: "You're asking a lot. Please roll less than 100 dice!", ephemeral: true })
-        return;
+    catch (e) {
+        console.error("Dice encountered an error: " + e)
     }
-
-    let results: number[] = []
-    let sum: number = 0
-
-    for(let i=0; i<rolls; i++)
-    {
-        let r = await Math.floor(Math.random()*sides)+1
-        sum+=r
-        await insertSorted(r, results)
-    }
-
-    await interaction.editReply({embeds:[{
-        title:"Results",
-        description: "**Numbers Rolled: **"+ results +
-        "\n**Highest: **"+ results[0] + 
-        "\n**Lowest: **"+ results[results.length-1] +
-        "\n**Sum: **: " + sum}]
-        , ephemeral: secret})
 }
 
 function insertSorted(num: number, arr: number[])

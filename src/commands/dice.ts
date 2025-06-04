@@ -1,6 +1,5 @@
 import { ApplicationCommandType, ApplicationCommandOptionType} from 'discord.js';
 import {CommandConfig} from '../commands.js'
-import { log } from '../logging.js';
 
 export const config: CommandConfig = {
 	name: 'd', 
@@ -19,7 +18,7 @@ export const config: CommandConfig = {
     },{
         name: 'secret',
         type: ApplicationCommandOptionType.Boolean,
-        description: 'Hides the results from everyone else.',
+        description: 'Hides the results from everyone else',
         required: false
     }]
 };

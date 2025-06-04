@@ -18,7 +18,7 @@ export interface CommandConfig {
 	name: string
 	description: string
 	type: ApplicationCommandType
-	options: any
+	options?: any
 }
 
 // Stolen from Lospec Discord bot//

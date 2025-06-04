@@ -4,6 +4,8 @@ services:
     depends_on:
       bishop:
        condition: service_healthy
+    
+    restart: on-failure
 
 
   bishop:

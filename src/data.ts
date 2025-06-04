@@ -77,7 +77,7 @@ function connect(): Connection
       if (!err.fatal) {
           return;
       }
-      if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
+      if (err.code !== 'PROTOCOL_CONNECTION_LOST' || err.code !== "ECONNRESET") {
           throw err;
       }
       console.log('Re-connecting lost connection: ' + err.stack);

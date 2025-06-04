@@ -8,17 +8,13 @@ import { submitQuote } from '../data.js';
 export const filter = async (reaction: MessageReaction, user: User) => {
 	// reaction is not a camera
 	if (reaction.emoji.name !== '📸') return false;
-    console.log("camera")
     // avoid requoting
     if(reaction.message.reactions.cache.find(reaction => (reaction.emoji.name === '📸' && reaction.me))) return false;
-    console.log("fresh quote")
 	// no self clipping or bot clipping
 	if ((!reaction.message.author) || reaction.message.author.bot || reaction.message.author.id == user.id) return false;
-    console.log("not self")
     // no quoting quotes
     let quoteChannel = CONFIG.getQuoteChannelId(reaction.message.guild.id)
     if (reaction.message.channel.id === quoteChannel) return false;
-    console.log("valid channel")
 
 	return true;
 }

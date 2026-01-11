@@ -1,9 +1,10 @@
+import { error } from 'console';
 import CONFIG from './config.js';
 import { Guild, quote, User } from 'discord.js';
 import { Connection, createConnection } from 'mysql';
 
 //this is probably bad practice but idk what good practice is so lol
-var SQL_CONNECTION: Connection = null
+export var SQL_CONNECTION: Connection = null
 
 export function ConnectDatabase(client)
 {
@@ -91,24 +92,12 @@ function connect(): Connection
   return con
 }
 
-export function submitQuote(guildId: string, quoted: string, clipper: string)
-{
-  if(SQL_CONNECTION == null) return;
-
-  //Mariadb should automagically assign a timestamp
-  SQL_CONNECTION.query(`INSERT INTO quotes (guild, quoted_user, clipping_user) VALUES ('${guildId}', '${quoted}', '${clipper}');`, (err, result) =>
-  {
-    if(err) throw err
-    console.log("Quote saved")
-  })
-}
-
 export function submitCitation(guildId: string, culprit: string, reason: string = "vore")
 {
   if(SQL_CONNECTION == null) return;
   SQL_CONNECTION.query(`INSERT INTO citations (guild, culprit_user, reason) VALUES ('${guildId}', '${culprit}', '${reason}');`, (err, result) =>
     {
-      if(err) throw err
-      console.log("Citation saved")
+      if(err) console.error(err)
+      else console.log("Citation saved")
     })
 }

@@ -2,7 +2,7 @@ import { GuildChannel, MessageFlags, MessageReaction, TextChannel, User } from '
 import CONFIG from '../config.js';
 import client from '../client.js';
 import { log } from 'console';
-import { submitQuote } from '../data.js';
+import { submitQuote } from '../data/quotes';
 
 // this should only work when a user reacts with a camera emoji to a message by someone else outside of quote channels
 export const filter = async (reaction: MessageReaction, user: User) => {

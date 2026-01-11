@@ -1,4 +1,4 @@
-import { ApplicationCommandType, ApplicationCommandOptionType} from 'discord.js';
+import { ApplicationCommandType, ApplicationCommandOptionType, ChatInputCommandInteraction} from 'discord.js';
 import {CommandConfig} from '../commands.js'
 import { log } from '../logging.js';
 
@@ -24,7 +24,7 @@ export const config: CommandConfig = {
     }]
 };
 
-export const execute = async (interaction) => {
+export async function execute(interaction: ChatInputCommandInteraction){
 
     try{
         let sides = interaction.options.getInteger('sides')
@@ -35,12 +35,12 @@ export const execute = async (interaction) => {
 
         if(rolls<=0 || sides<=1)
         {
-            interaction.editReply({ content: "Dice need to have at least 2 sides, and you need to roll at least 1 die!", ephemeral: true })
+            interaction.editReply({ content: "Dice need to have at least 2 sides, and you need to roll at least 1 die!", ephemeral: true } as any)
             return;
         }
         if(rolls>=100)
         {
-            await interaction.editReply({ content: "You're asking a lot. Please roll less than 100 dice!", ephemeral: true })
+            await interaction.editReply({ content: "You're asking a lot. Please roll less than 100 dice!", ephemeral: true } as any)
             return;
         }
         let results: number[] = []
@@ -59,7 +59,7 @@ export const execute = async (interaction) => {
             "\n**Highest: **"+ results[0] + 
             "\n**Lowest: **"+ results[results.length-1] +
             "\n**Sum: **: " + sum}]
-            , ephemeral: secret})
+            , ephemeral: secret} as any)
     }
     catch (e) {
         console.error("Dice encountered an error: " + e)

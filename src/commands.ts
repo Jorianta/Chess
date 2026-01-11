@@ -21,6 +21,7 @@ export interface CommandConfig {
 	options: any
 }
 
+
 // Stolen from Lospec Discord bot//
 export function LoadCommands(client: Client)
 {

@@ -51,7 +51,7 @@ export const execute = async (interaction: CommandInteraction<'cached'>) => {
                 {
                     color: color,
                     icon: emoji? emoji.id || emoji.name : null ,
-                    hoist: true,
+                    hoist: false,
                     mentionable: false,
                     name: user.username,
                     permissions: [],
@@ -78,8 +78,11 @@ export const execute = async (interaction: CommandInteraction<'cached'>) => {
 
         console.log(`Updating custom role for ${user.username}`)
 
-        if(color) user_role.setColor(color).catch(e => console.error("Custom role encountered an error while setting th color: " + e))
-        if(emoji) user_role.setIcon(emoji.id || emoji.name || null).catch(e => console.error("Custom role encountered an error while setting the icon: " + e))
+        if(color) await user_role.setColor(color).catch(e => console.error("Custom role encountered an error while setting the color: " + e))
+        if(emoji) await user_role.setIcon(emoji.id || emoji.name || null).catch(e => console.error("Custom role encountered an error while setting the icon: " + e))
+
+        //In case the bot role was too low when the role was first made
+        user_role.setPosition(interaction.guild.members.me.roles.highest.position-1)
 
         interaction.editReply("Enjoy your custom role!")
 

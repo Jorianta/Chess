@@ -11,7 +11,6 @@ const COMMANDS: {[id: string]: Function} = {};
 export interface Command {
 	config: CommandConfig
 	execute: (interaction: CommandInteraction) => void
-
 }
 
 export interface CommandConfig {

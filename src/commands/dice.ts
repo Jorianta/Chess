@@ -1,5 +1,6 @@
 import { ApplicationCommandType, ApplicationCommandOptionType, ChatInputCommandInteraction} from 'discord.js';
 import {CommandConfig} from '../commands.js'
+import { rollDice } from '../utility/dice.js';
 
 export const config: CommandConfig = {
 	name: 'd', 
@@ -26,9 +27,9 @@ export const config: CommandConfig = {
 export async function execute(interaction: ChatInputCommandInteraction){
 
     try{
-        let sides = interaction.options.getInteger('sides')
-        let rolls = interaction.options.getInteger('rolls')||1
-        let secret = interaction.options.getBoolean('secret')||false
+        const sides = interaction.options.getInteger('sides') || 1
+        const rolls = interaction.options.getInteger('rolls') || 1
+        const secret = interaction.options.getBoolean('secret') || false
 
 	    await interaction.deferReply({ephemeral: secret});
 
@@ -42,15 +43,8 @@ export async function execute(interaction: ChatInputCommandInteraction){
             await interaction.editReply({ content: "You're asking a lot. Please roll less than 100 dice!", ephemeral: true } as any)
             return;
         }
-        let results: number[] = []
-        let sum: number = 0
 
-        for(let i=0; i<rolls; i++)
-        {
-            let r = Math.floor(Math.random()*sides)+1
-            sum+=r
-             insertSorted(r, results)
-        }
+        const [results, sum] = rollDice(rolls,sides);
 
         await interaction.editReply({embeds:[{
             title:"Results",

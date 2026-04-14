@@ -7,11 +7,11 @@
       "sourceMap": true,
       "outDir": "./dist",
       "rootDir": "./",
-      "strict": false,
       "moduleResolution": "node",
       "resolveJsonModule": true,
       "esModuleInterop": true,
       "experimentalDecorators": true,
+      "strictNullChecks": true,
       "emitDecoratorMetadata": true,
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true

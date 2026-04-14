@@ -21,9 +21,17 @@ export const config: CommandConfig = {
 
 export const execute = async (interaction: CommandInteraction<'cached'>) => {
     await interaction.deferReply({flags: ["Ephemeral"]})
+
+    const ME = interaction.guild.members.me
+
+    if(ME === null) {
+        interaction.editReply("I have no power here in this server...")
+        return
+    }
+
     try{
         let color = interaction.options["getString"]('color')||null
-        let emojiString = interaction.options["getString"]('emoji')||null
+        let emojiString: string | null = interaction.options["getString"]('emoji')||null
 
         if(!interaction.guild.features.includes("ROLE_ICONS"))
         {
@@ -38,10 +46,9 @@ export const execute = async (interaction: CommandInteraction<'cached'>) => {
             return;
         }
 
-        let emoji: PartialEmoji = emojiString!=null? parseEmoji(emojiString) : null
-
-        let user = interaction.user
-        let user_role = interaction.guild.roles.cache.find(r => r.name == user.username)
+        const emoji: PartialEmoji | null = emojiString!==null ? parseEmoji(emojiString) : null,
+            user = interaction.user,
+            user_role = interaction.guild.roles.cache.find(r => r.name == user.username)
 
         
         if(!user_role)
@@ -50,12 +57,12 @@ export const execute = async (interaction: CommandInteraction<'cached'>) => {
             await interaction.guild.roles.create(
                 {
                     color: color,
-                    icon: emoji? emoji.id || emoji.name : null ,
+                    icon: emoji && (emoji.id || emoji.name) ,
                     hoist: false,
                     mentionable: false,
                     name: user.username,
                     permissions: [],
-                    position: interaction.guild.members.me.roles.highest.position,
+                    position: ME.roles.highest.position,
                     reason: "They asked nicely."
                 }
             ).then(
@@ -82,7 +89,7 @@ export const execute = async (interaction: CommandInteraction<'cached'>) => {
         if(emoji) await user_role.setIcon(emoji.id || emoji.name || null).catch(e => console.error("Custom role encountered an error while setting the icon: " + e))
 
         //In case the bot role was too low when the role was first made
-        user_role.setPosition(interaction.guild.members.me.roles.highest.position-1)
+        user_role.setPosition(ME.roles.highest.position-1)
 
         interaction.editReply("Enjoy your custom role!")
 
@@ -92,3 +99,4 @@ export const execute = async (interaction: CommandInteraction<'cached'>) => {
         throw e
     }
 }
+

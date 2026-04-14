@@ -1,11 +1,11 @@
 
 import client from './src/client.js';
 import { LoadCommands } from './src/commands.js';
-import { ConnectDatabase } from './src/data.js';
+import { initDB } from './src/db.js';
 import { LoadReactions } from './src/reactions.js';
 import { LoadResponses } from './src/responses.js';
 
-ConnectDatabase(client)
+initDB()
 LoadCommands(client)
 LoadReactions(client)
 LoadResponses(client)

@@ -6,6 +6,10 @@ import { submitQuote } from '../data/quotes';
 
 // this should only work when a user reacts with a camera emoji to a message by someone else outside of quote channels
 export const filter = async (reaction: MessageReaction, user: User) => {
+    const guild = reaction.message.guild
+
+    if(! guild ) return false
+
 	// reaction is not a camera
 	if (reaction.emoji.name !== '📸') return false;
     // avoid requoting
@@ -13,29 +17,33 @@ export const filter = async (reaction: MessageReaction, user: User) => {
 	// no self clipping or bot clipping
 	if ((!reaction.message.author) || reaction.message.author.bot || reaction.message.author.id == user.id) return false;
     // no quoting quotes
-    let quoteChannel = CONFIG.getQuoteChannelId(reaction.message.guild.id)
+    let quoteChannel = CONFIG.getQuoteChannelId(guild.id)
     if (reaction.message.channel.id === quoteChannel) return false;
 
 	return true;
 }
 
 export const execute = async (reaction: MessageReaction, user: User) => {
+    const guild = reaction.message.guild
+
+    if(! guild ) return;
+
     try{
         console.log('quoting message ', reaction.message.id);
 
         //put on our own camera. This will prevent us from requoting probably hopefully
         reaction.message.react('📸')
 
-        const quoteChannel = await CONFIG.findQuoteChannel(reaction.message.guild);
+        const quoteChannel = await CONFIG.findQuoteChannel(guild);
         if(quoteChannel == null || !(quoteChannel instanceof TextChannel))
         {
-            console.error(`Guild ${reaction.message.guild.name} has no text channel named ${CONFIG.quoteChannel} for quotes, or it no longer exists.`)
+            console.error(`Guild ${guild.name} has no text channel named ${CONFIG.quoteChannel} for quotes, or it no longer exists.`)
             return; 
         }
         
         const channel: string = (reaction.message.channel as GuildChannel).id
-        const author: User = reaction.message.author 
-        const text: string = reaction.message.content
+        const author: User | null = reaction.message.author 
+        const text: string | null = reaction.message.content
         const link: string = reaction.message.url
         
         quoteChannel.send({
@@ -45,7 +53,7 @@ export const execute = async (reaction: MessageReaction, user: User) => {
         +"\n\nClipped by <@"+user+">"+
         "\nOriginal Message: "+ link}]})
 
-        submitQuote(reaction.message.guildId,author.id,user.id)
+        author && submitQuote(guild.id ,author.id,user.id)
         
     } catch (e) {
         console.error("quoting encountered an error: " + e)

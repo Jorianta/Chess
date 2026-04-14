@@ -3,19 +3,7 @@ import CONFIG from './config.js';
 import { Guild, quote, User } from 'discord.js';
 import { Connection, createConnection } from 'mysql';
 
-//this is probably bad practice but idk what good practice is so lol
-export var SQL_CONNECTION: Connection = null
-
-export function ConnectDatabase(client)
-{
-	client.once('ready', async c => {
-
-		console.log("Creating database connection...")
-        init_db()
-  })
-}
-
-function init_db()
+export function initDB()
 {
 
   let con = createConnection({
@@ -55,7 +43,7 @@ function init_db()
   });
 }
 
-function connect(): Connection
+export function connect(): Connection
 {
   let con = createConnection({
     host: CONFIG.dbHost,
@@ -66,36 +54,14 @@ function connect(): Connection
     multipleStatements: true
   });
 
-  con.connect()
-  SQL_CONNECTION = con;
-
-  handleDisconnect(con)  
-
-  //reconnect if something bad happend
-  function handleDisconnect(connection: Connection)
-  {
-    connection.on('error', function(err) {
-      if (!err.fatal) {
-          return;
-      }
-      if (err.code !== 'PROTOCOL_CONNECTION_LOST' || err.code !== "ECONNRESET") {
-          throw err;
-      }
-      console.log('Re-connecting lost connection: ' + err.stack);
-      let sql = createConnection(connection.config);
-      handleDisconnect(sql);
-      sql.connect();
-      SQL_CONNECTION = sql;
-  });
-  }
-
   return con
 }
 
 export function submitCitation(guildId: string, culprit: string, reason: string = "vore")
 {
-  if(SQL_CONNECTION == null) return;
-  SQL_CONNECTION.query(`INSERT INTO citations (guild, culprit_user, reason) VALUES ('${guildId}', '${culprit}', '${reason}');`, (err, result) =>
+  const SQL = connect()
+  if(SQL == null) return;
+  SQL.query(`INSERT INTO citations (guild, culprit_user, reason) VALUES ('${guildId}', '${culprit}', '${reason}');`, (err, result) =>
     {
       if(err) console.error(err)
       else console.log("Citation saved")

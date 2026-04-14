@@ -24,10 +24,17 @@ const date = new RegExp(/^(\d{2})\/(\d{2})$/)
 const errorResponse = {content: "I had a lil error there..."}
 
 export function execute(interaction: ChatInputCommandInteraction){
-    try{
-        const bdayStr = interaction.options.getString("date")
 
-        const groups = date.exec(bdayStr)
+    const bdayStr = interaction.options.getString("date")
+
+    if(bdayStr === null) return
+
+    try{
+        
+
+        const groups = date.exec(bdayStr)?.groups
+
+        if(groups === undefined) return;
 
         const month = parseFloat(groups[0])
         const day = parseFloat(groups[1])

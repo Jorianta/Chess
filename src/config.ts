@@ -89,7 +89,7 @@ class BotConfig {
         return this._token
     }
 
-    public findQuoteChannel(guild: Guild): Promise<Channel> | null
+    public async findQuoteChannel(guild: Guild): Promise<Channel | null>
     {
         
         if(this._quoteChannels[guild.id])

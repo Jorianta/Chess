@@ -10,3 +10,27 @@ export function submitCitation(guildId: string, culprit: string, reason: string 
       else console.log("Citation saved")
     })
 }
+
+export function tallyCitations(guildId: string, cited: string): Promise<number>
+{   
+  const SQL = connect()
+  if(SQL == null) return;
+
+  let sql = 'SELECT COUNT(*) FROM citations WHERE `guild` = ' + guildId +
+              ' AND `culprit_user = ' + cited
+
+  //Mariadb should automagically assign a timestamp
+  
+  return new Promise((resolve, reject) => {
+    SQL.query(sql, (err, result) =>
+    {
+      if(err || typeof result !== "number"){
+        console.error(err)
+        reject(err)
+        return
+      }
+        
+        resolve(result)
+    })
+  })
+}

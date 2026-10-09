@@ -15,22 +15,26 @@ export function submitQuote(guildId: string, quoted: string, clipper: string)
   })
 }
 
-export function tallyQuotes(guildId: string, quoted: string, callback: (count: number) => any)
+export function tallyQuotes(guildId: string, quoted: string): Promise<number>
 {   
-    const SQL = connect()
-    if(SQL == null) return;
+  const SQL = connect()
+  if(SQL == null) return;
 
-    let sql = 'SELECT COUNT(*) FROM quotes WHERE `guild` = ' + guildId +
-                ' AND `quoted_user = ' + quoted
+  let sql = 'SELECT COUNT(*) FROM quotes WHERE `guild` = ' + guildId +
+              ' AND `quoted_user = ' + quoted
 
-    //Mariadb should automagically assign a timestamp
-    
-    SQL.query(sql, (err, result: number) =>
+  //Mariadb should automagically assign a timestamp
+  
+  return new Promise((resolve, reject) => {
+    SQL.query(sql, (err, result) =>
     {
-        if(err) throw err
-        if(typeof result !== "number") throw("Expected query to return a number")
-
+      if(err || typeof result !== "number"){
+        console.error(err)
+        reject(err)
+        return
+      }
         
-        callback(result);
+        resolve(result)
     })
+  })
 }

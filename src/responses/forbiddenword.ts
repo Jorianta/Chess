@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { submitCitation } from "../data/citations";
+import { submitCitation } from "../data/citations.js";
 
 export const filter = async (message: Message) => {
 	if (! (message.content.toLowerCase().includes('vore')) ) return false;

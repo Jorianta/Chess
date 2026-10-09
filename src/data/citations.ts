@@ -1,4 +1,4 @@
-import { connect } from '../db'
+import { connect } from '../db.js'
 
 export function submitCitation(guildId: string, culprit: string, reason: string = "vore")
 {

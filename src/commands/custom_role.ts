@@ -30,8 +30,8 @@ export const execute = async (interaction: CommandInteraction<'cached'>) => {
     }
 
     try{
-        let color = interaction.options["getString"]('color')||null
-        let emojiString: string | null = interaction.options["getString"]('emoji')||null
+        let color = (interaction as any).options["getString"]('color')||null
+        let emojiString: string | null = (interaction as any).options["getString"]('emoji')||null
 
         if(!interaction.guild.features.includes("ROLE_ICONS"))
         {

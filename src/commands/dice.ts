@@ -58,21 +58,3 @@ export async function execute(interaction: ChatInputCommandInteraction){
         console.error("Dice encountered an error: " + e)
     }
 }
-
-function insertSorted(num: number, arr: number[])
-{
-    if(arr.length===0)
-    {
-        arr[0]=num; return;
-    }
-
-    let i;
-    for(i=0; i<arr.length; i++)
-    {
-        if(num>=arr[i])
-        {
-            break;
-        }
-    }
-    arr.splice(i,0, num)
-}

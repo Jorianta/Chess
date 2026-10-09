@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
-import { rollDice } from "../utility/dice";
+import { rollDice } from "../utility/dice.js";
 
-const DICE_ROLL = /^!(?<rolls>\d+)d(?<sides>\d+)(?<secret>\?)?$/
+const DICE_ROLL = /^!(?<rolls>\d+)d(?<sides>\d+)(?<secret>\??)$/
 
 export const filter = async (message: Message) => {
     if (! (DICE_ROLL.test(message.content)) ) return false;
@@ -12,8 +12,6 @@ export const execute = async (message: Message) => {
     const id = message.guild?.id
 
     try {
-        id && console.log('Issuing citation:', 'https://discord.com/channels/'+id+'/'+message.channel.id+'/'+message.id);
-
 
         const result = message.content.match(DICE_ROLL)?.groups
 
@@ -21,7 +19,10 @@ export const execute = async (message: Message) => {
 
         const rolls = parseFloat(result['rolls'])
         const sides = parseFloat(result['sides'])
-        const secret = !!result['secret']
+        const secret = !!result['secret'];
+
+        console.log(result)
+        console.log(result['secret'])
 
         if(rolls<=0 || sides<=1)
         {

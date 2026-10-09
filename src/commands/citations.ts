@@ -7,7 +7,7 @@ export const config: CommandConfig = {
     description: 'Check server stats on citations.', 
     type: ApplicationCommandType.ChatInput,
     options: [{
-        name: 'quoted-user',
+        name: 'cited-user',
         type: ApplicationCommandOptionType.User,
         description: 'See how often this user was cited.',
         required: true
@@ -19,7 +19,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     const DEFER = interaction.deferReply()
 
     const guild = interaction.guildId
-    const quoted_user = interaction.options.getUser('quoted-user')
+    const quoted_user = interaction.options.getUser('cited-user')
 
     const count = tallyCitations(guild, quoted_user.id)
 
@@ -27,8 +27,11 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     count.catch(error => {
         interaction.editReply("I ran into an issue...")
     }).then(count => {
-        if(!count) return;
+        if(typeof count !== 'number') {
+            interaction.editReply("I ran into an issue...")
+            return;
+        }
 
-        interaction.editReply(`@${quoted_user.username} has been quoted ${count} times.`)
+        interaction.editReply(`<@${quoted_user.id}> has been cited ${count} times.`)
     })
 }

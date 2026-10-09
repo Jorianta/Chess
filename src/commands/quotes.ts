@@ -27,8 +27,11 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     count.catch(error => {
         interaction.editReply("I ran into an issue...")
     }).then(count => {
-        if(!count) return;
+        if(typeof count !== 'number') {
+            interaction.editReply("I ran into an issue...")
+            return;
+        }
 
-        interaction.editReply(`@${quoted_user.username} has been quoted ${count} times.`)
+        interaction.editReply(`<@${quoted_user.id}> has been quoted ${count} times.`)
     })
 }

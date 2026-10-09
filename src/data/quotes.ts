@@ -20,21 +20,28 @@ export function tallyQuotes(guildId: string, quoted: string): Promise<number>
   const SQL = connect()
   if(SQL == null) return;
 
-  let sql = 'SELECT COUNT(*) FROM quotes WHERE `guild` = ' + guildId +
-              ' AND `quoted_user = ' + quoted
+  let sql = `SELECT COUNT(*) AS count FROM quotes WHERE guild = '${guildId}'
+              AND quoted_user = '${quoted}';`
 
   //Mariadb should automagically assign a timestamp
   
   return new Promise((resolve, reject) => {
-    SQL.query(sql, (err, result) =>
-    {
-      if(err || typeof result !== "number"){
-        console.error(err)
-        reject(err)
-        return
-      }
-        
+    try{
+      SQL.query(sql, (err, result) =>
+      {
+
+        result = result[0]?.count ?? 0
+        if(err || typeof result !== "number"){
+          console.error(err)
+          reject(err)
+          return
+        }
+          
         resolve(result)
-    })
+      })
+    }
+    catch(E){
+        reject(E)
+      }
   })
 }
